@@ -39,7 +39,7 @@ Follow these steps to set up your environment:
     Open a new terminal and activate the virtual environment as described in step 2. Then run the tests with your preferred test runner. For example, if you're using pytest:
 
     ```bash
-    pytest
+    pytest -s test.py
     ```
 
 Remember to replace `pytest` with your actual test command if it's different.

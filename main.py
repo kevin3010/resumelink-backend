@@ -3,7 +3,13 @@ from pydantic import BaseModel
 from typing import List
 import json
 
-ENV = "dev"
+from fastapi import FastAPI
+from api.endpoints import users
+
+app = FastAPI()
+
+app.include_router(users.router, prefix="/api/users", tags=["users"])
+
 
 app = FastAPI()
 
