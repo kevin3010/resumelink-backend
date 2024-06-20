@@ -1,7 +1,7 @@
 from typing import List
 from fastapi import APIRouter, HTTPException, status
 from crud.user import crud_user
-from schemas.user import UserCreate, UserUpdate, UserResponse
+from schemas.users import UserCreate, UserUpdate, UserResponse
 
 router = APIRouter()
 
