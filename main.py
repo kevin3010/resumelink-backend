@@ -1,6 +1,9 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List
+import json
+
+ENV = "dev"
 
 app = FastAPI()
 
@@ -14,15 +17,11 @@ class KeywordsResponse(BaseModel):
     skills: List[str]
 
 class Job(BaseModel):
-    experience: str
-    name: str
-    role: str
-    location: str
-    salary: str
-    portal: str
-    link: str
-    commonSkills: str
-    otherSkills: str
+    CompanyName: str
+    Date: str
+    Location: str
+    Position: str
+    JobURL: str
 
 class JobsListResponse(BaseModel):
     jobs: List[Job]
@@ -44,33 +43,21 @@ async def get_keywords():
     )
     return keywords
 
+
 @app.get("/list-of-jobs", response_model=JobsListResponse)
 async def list_of_jobs():
-    # Mock data, replace with actual logic
-    jobs = [
-        Job(
-            experience="5+ years",
-            name="Senior Developer",
-            role="Backend Developer",
-            location="Remote",
-            salary="$120,000",
-            portal="Indeed",
-            link="https://example.com/job1",
-            commonSkills="Python, FastAPI",
-            otherSkills="Docker, Kubernetes"
-        ),
-        Job(
-            experience="3+ years",
-            name="Data Scientist",
-            role="Data Scientist",
-            location="New York, NY",
-            salary="$110,000",
-            portal="LinkedIn",
-            link="https://example.com/job2",
-            commonSkills="Python, SQL",
-            otherSkills="TensorFlow, Keras"
-        ),
-    ]
+    jobs = []
+    with open("Jobs/jobs_test.jsonl", "r") as file:
+        for line in file:
+            job_data = json.loads(line)
+            job = Job(
+                CompanyName=job_data["company_name"],
+                Date=job_data["date"],
+                Location=job_data["location"],
+                Position=job_data["position"],
+                JobURL=job_data["job_url"]
+            )
+            jobs.append(job)
     response = JobsListResponse(jobs=jobs)
     return response
 
