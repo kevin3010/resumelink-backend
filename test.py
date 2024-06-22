@@ -12,6 +12,8 @@ def test_login():
     
     assert response.status_code == 200
     assert "idToken" in response.json().get("user")
+    
+    
 
 # def test_list_of_jobs():
 #     response = client.get("/list-of-jobs")
