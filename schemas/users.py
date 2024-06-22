@@ -3,7 +3,9 @@ from typing import List, Optional
 from bson import ObjectId
 
 class UserBase(BaseModel):
+    user_id: str
     name: str
+    email: str
     resume: str
     keywords: List[str]
 
@@ -20,6 +22,10 @@ class UserResponse(UserInDB):
     class Config:
         from_attributes = True
         json_encoders = {ObjectId: str}
+        
+class UserLoginResponse(BaseModel):
+    user_id : str
+    token : str
         
 
 class SignUpSchema(BaseModel):
