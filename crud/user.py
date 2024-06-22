@@ -9,7 +9,7 @@ class CRUDUser:
         self.collection = collection
 
     async def create(self, user_in: UserCreate) -> UserResponse:
-        user = user_in.dict()
+        user = user_in.model_dump()
         result = await self.collection.insert_one(user)
         user["id"] = str(result.inserted_id)
         return UserResponse(**user)

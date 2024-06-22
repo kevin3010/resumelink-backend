@@ -1,6 +1,8 @@
 .venv
 
 # Byte-compiled / optimized / DLL files
+firebase_admin_config.json
+temp.py
 __pycache__
 *.py[cod]
 *$py.class

@@ -1,8 +1,9 @@
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = "mongodb+srv://admin:kevinandjevin@resumelink.ctj0men.mongodb.net/?retryWrites=true&w=majority&appName=ResumeLink"
-    DATABASE_NAME: str = "resume_link_db"
+    DATABASE_URL: str
+    DATABASE_NAME: str
+    FIREBASE_CREDENTIALS_PATH: str
 
     class Config:
         env_file = ".env"
