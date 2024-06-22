@@ -14,23 +14,24 @@ class CRUDUser:
         user["id"] = str(result.inserted_id)
         return UserResponse(**user)
 
-    async def get(self, id: str) -> Optional[UserResponse]:
-        user = await self.collection.find_one({"_id": ObjectId(id)})
+    async def get(self, user_user_id: str) -> Optional[UserResponse]:
+        user = await self.collection.find_one({"user_id": user_id})
+        print(user)
         if user:
             user["id"] = str(user["_id"])
             return UserResponse(**user)
 
-    async def update(self, id: str, user_in: UserUpdate) -> Optional[UserResponse]:
+    async def update(self, user_id: str, user_in: UserUpdate) -> Optional[UserResponse]:
         user = {k: v for k, v in user_in.dict().items() if v is not None}
-        result = await self.collection.update_one({"_id": ObjectId(id)}, {"$set": user})
+        result = await self.collection.update_one({"user_id": user_id}, {"$set": user})
         if result.modified_count == 1:
             user = await self.get(id)
             return user
 
-    async def remove(self, id: str) -> Optional[UserResponse]:
-        user = await self.collection.find_one({"_id": ObjectId(id)})
+    async def remove(self, user_id: str) -> Optional[UserResponse]:
+        user = await self.collection.find_one({"user_id": user_id})
         if user:
-            await self.collection.delete_one({"_id": ObjectId(id)})
+            await self.collection.delete_one({"user_id": user_id})
             user["id"] = str(user["_id"])
             return UserResponse(**user)
 
