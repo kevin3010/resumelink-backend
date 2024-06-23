@@ -6,8 +6,9 @@ from schemas.users import UserCreate, UserUpdate, UserResponse, SignUpSchema, Lo
 from fastapi import APIRouter, Depends
 from firebase_admin import auth
 from core.firebase import verify_token, firebase_client
-
-import os
+from botocore.exceptions import NoCredentialsError, PartialCredentialsError, ClientError
+from utility.file_upload import upload_file
+from time import time
 
 router = APIRouter()
 
@@ -46,6 +47,7 @@ async def get_user(user_id: str):
 
 @router.put("/{user_id}", response_model=UserResponse)
 async def update_user(user_id: str, user_in: UserUpdate):
+    user_in.user_id = user_id
     user = await crud_user.update(user_id, user_in)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -57,4 +59,26 @@ async def delete_user(user_id: str):
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user
+
+
+@router.post("/{user_id}/upload-resume", response_model=UserResponse)
+async def upload_file_endpoint(user_id: str, file: UploadFile = File(...)):
+    try:
+        
+        filename = file.filename.split(".")[0].strip()
+        filename = filename + "__" + user_id + "__" + str(int(time())) + ".pdf"
+        upload_file(file.file, filename)
+        
+        user_in = UserUpdate(user_id=user_id, resume=filename)
+        user = await crud_user.update(user_id, user_in)
+    
+        return user
+    except NoCredentialsError:
+        raise HTTPException(status_code=401, detail="Credentials not available.")
+    except PartialCredentialsError:
+        raise HTTPException(status_code=401, detail="Incomplete credentials provided.")
+    except ClientError as e:
+        raise HTTPException(status_code=500, detail=f"Failed to upload file: {e}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 

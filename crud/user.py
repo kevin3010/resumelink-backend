@@ -14,9 +14,8 @@ class CRUDUser:
         user["id"] = str(result.inserted_id)
         return UserResponse(**user)
 
-    async def get(self, user_user_id: str) -> Optional[UserResponse]:
+    async def get(self, user_id: str) -> Optional[UserResponse]:
         user = await self.collection.find_one({"user_id": user_id})
-        print(user)
         if user:
             user["id"] = str(user["_id"])
             return UserResponse(**user)
@@ -24,8 +23,8 @@ class CRUDUser:
     async def update(self, user_id: str, user_in: UserUpdate) -> Optional[UserResponse]:
         user = {k: v for k, v in user_in.dict().items() if v is not None}
         result = await self.collection.update_one({"user_id": user_id}, {"$set": user})
-        if result.modified_count == 1:
-            user = await self.get(id)
+        if result.matched_count == 1:
+            user = await self.get(user_id)
             return user
 
     async def remove(self, user_id: str) -> Optional[UserResponse]:
