@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional
 from bson import ObjectId
+from typing import Optional
 
 class UserBase(BaseModel):
     user_id: str
@@ -13,7 +14,11 @@ class UserCreate(UserBase):
     pass
 
 class UserUpdate(UserBase):
-    pass
+    user_id: Optional[str] = None
+    name: Optional[str] = None
+    email: Optional[str] = None
+    resume: Optional[str] = None
+    keywords: Optional[List[str]] = None
 
 class UserInDB(UserBase):
     id: str = Field(default_factory=lambda: str(ObjectId()))
