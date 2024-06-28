@@ -1,5 +1,7 @@
 .venv
 
+resources/
+
 # Byte-compiled / optimized / DLL files
 firebase_admin_config.json
 firebase_client_config.json
@@ -7,7 +9,6 @@ temp.py
 __pycache__
 *.py[cod]
 *$py.class
-
 # C extensions
 *.so
 

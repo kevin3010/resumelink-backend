@@ -9,6 +9,7 @@ from core.firebase import verify_token, firebase_client
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError, ClientError
 from utility.file_upload import upload_file
 from time import time
+from utility.read_pdf import read_pdf
 
 router = APIRouter()
 
@@ -61,13 +62,17 @@ async def delete_user(user_id: str):
     return user
 
 
-@router.post("/{user_id}/upload-resume", response_model=UserResponse)
+@router.post("/{user_id}/upload-resume")
 async def upload_file_endpoint(user_id: str, file: UploadFile = File(...)):
     try:
         
         filename = file.filename.split(".")[0].strip()
         filename = filename + "__" + user_id + "__" + str(int(time())) + ".pdf"
         upload_file(file.file, filename)
+        
+        content = await file.read()
+        text = read_pdf(content)
+        
         
         user_in = UserUpdate(user_id=user_id, resume=filename)
         user = await crud_user.update(user_id, user_in)
