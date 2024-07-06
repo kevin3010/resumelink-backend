@@ -18,3 +18,5 @@ class VectorStore:
         index = self.pinecone.Index(settings.PINECONE_INDEX_NAME_JOBS)
         return index.query(vector=resume_embedding, top_k=top_k, include_metadata=True, include_values=False, namespace='ns1')
     
+vector_store = VectorStore()
+    

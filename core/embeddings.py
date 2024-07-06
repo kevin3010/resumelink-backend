@@ -13,3 +13,5 @@ class Embeddings:
         )
         
         return embeddings
+    
+embedding_store = Embeddings()
