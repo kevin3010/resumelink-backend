@@ -2,7 +2,9 @@ from typing import List
 from fastapi import APIRouter, HTTPException, status, File, UploadFile
 from fastapi.responses import JSONResponse
 from crud.user import crud_user
+from crud.jobs import crud_job
 from schemas.users import UserCreate, UserUpdate, UserResponse, SignUpSchema, LoginSchema, UserLoginResponse
+from schemas.jobs import JobsResponse
 from fastapi import APIRouter, Depends
 from firebase_admin import auth
 from core.firebase import verify_token, firebase_client
@@ -94,3 +96,11 @@ async def upload_file_endpoint(user_id: str, file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.get("/{user_id}/get-jobs", response_model=List[JobsResponse])
+async def upload_file_endpoint(user_id: str):
+    
+    user = await crud_user.get(user_id)
+    job_ids = user.jobs
+    jobs = await crud_job.get_jobs(job_ids)
+    
+    return jobs

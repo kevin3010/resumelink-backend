@@ -14,6 +14,14 @@ class CRUDJobs:
         jobs_list = [job.model_dump(by_alias=True) for job in jobs_list]
         result = await self.collection.insert_many(jobs_list)
         return result.inserted_ids
-
-
+    
+    async def get_jobs(self, job_ids: List[str]) -> Optional[List[JobsResponse]]:
+        
+        job_ids = [ObjectId(job) for job in job_ids]
+        jobs = self.collection.find({"_id": { "$in" : job_ids }})
+        
+        if jobs:
+            return [ JobsResponse(**job) async for job in jobs]
+        
+        
 crud_job = CRUDJobs(jobs_collection)
