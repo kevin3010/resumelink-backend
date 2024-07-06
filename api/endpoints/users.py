@@ -10,6 +10,9 @@ from botocore.exceptions import NoCredentialsError, PartialCredentialsError, Cli
 from utility.file_upload import upload_file
 from time import time
 from utility.read_pdf import read_pdf
+from core.embeddings import embedding_store
+from core.vector_store import vector_store
+
 
 router = APIRouter()
 
@@ -18,9 +21,10 @@ async def signup(user: SignUpSchema):
     try:
         f_user = auth.create_user(email=user.email, password=user.password)
         user_id = f_user._data["localId"]
-        d_user = await crud_user.create(UserCreate(user_id=user_id, email=user.email , name="", resume="", keywords=[]))
+        d_user = await crud_user.create(UserCreate(user_id=user_id, email=user.email , name=user.email))
         return d_user
     except Exception as e:
+        print(e)
         raise HTTPException(status_code=400, detail=str(e))
 
 @router.post("/login", response_model=UserLoginResponse, status_code=status.HTTP_200_OK)
@@ -65,19 +69,22 @@ async def delete_user(user_id: str):
 @router.post("/{user_id}/upload-resume")
 async def upload_file_endpoint(user_id: str, file: UploadFile = File(...)):
     try:
-        
+    
         filename = file.filename.split(".")[0].strip()
-        filename = filename + "__" + user_id + "__" + str(int(time())) + ".pdf"
-        upload_file(file.file, filename)
+        resume_path = filename + "__" + user_id + "__" + str(int(time())) + ".pdf"
+        # upload_file(file.file, resume_path)
         
-        content = await file.read()
-        text = read_pdf(content)
-        
-        
-        user_in = UserUpdate(user_id=user_id, resume=filename)
+        resume_text = read_pdf(await file.read())
+        resume_embeddings = (await embedding_store.generate_embeddings(resume_text))[0].values    
+
+        jobs = await vector_store.query_jobs(resume_embeddings, metadata=False)
+        jobs = [job["id"] for job in jobs['matches']]
+
+        user_in = UserUpdate(user_id=user_id, resume=filename, resume_path=resume_path, resume_text=resume_text, resume_embeddings=resume_embeddings, jobs=jobs)
         user = await crud_user.update(user_id, user_in)
     
         return user
+    
     except NoCredentialsError:
         raise HTTPException(status_code=401, detail="Credentials not available.")
     except PartialCredentialsError:
