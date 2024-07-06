@@ -3,12 +3,16 @@ from typing import List, Optional
 from bson import ObjectId
 from typing import Optional
 
+
 class UserBase(BaseModel):
     user_id: str
     name: str
     email: str
-    resume: str
-    keywords: List[str]
+    resume_path: Optional[str] = None
+    resume_text: Optional[str] = None
+    jobs: Optional[List[str]] = None
+    resume_embeddings: Optional[List[float]] = None
+    keywords: Optional[List[str]] = None
 
 class UserCreate(UserBase):
     pass

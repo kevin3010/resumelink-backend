@@ -9,5 +9,7 @@ def read_pdf(content_stream):
     for page_num in range(pdf_document.page_count):
         page = pdf_document.load_page(page_num)
         pdf_text += page.get_text()
+        
+    pdf_document.close()
     
     return pdf_text
