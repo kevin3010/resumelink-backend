@@ -5,6 +5,7 @@ from fastapi import Depends,HTTPException
 from .config import settings
 import pyrebase
 import json 
+import base64
 
 security = HTTPBearer()
 
@@ -12,7 +13,7 @@ firebase_admin_config = {
     "type" : settings.FIREBASE_ADMIN_TYPE,  
     "project_id": settings.FIREBASE_ADMIN_PROJECT_ID,
     "private_key_id": settings.FIREBASE_ADMIN_PRIVATE_KEY_ID,
-    "private_key": settings.FIREBASE_ADMIN_PRIVATE_KEY,
+    "private_key": base64.b64decode(settings.FIREBASE_ADMIN_PRIVATE_KEY).decode('utf-8'),
     "client_email": settings.FIREBASE_ADMIN_CLIENT_EMAIL,
     "client_id": settings.FIREBASE_ADMIN_CLIENT_ID,
     "auth_uri": settings.FIREBASE_ADMIN_AUTH_URI,
