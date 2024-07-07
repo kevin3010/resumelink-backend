@@ -8,10 +8,33 @@ import json
 
 security = HTTPBearer()
 
+firebase_admin_config = {
+    "type" : settings.FIREBASE_ADMIN_TYPE,  
+    "project_id": settings.FIREBASE_ADMIN_PROJECT_ID,
+    "private_key_id": settings.FIREBASE_ADMIN_PRIVATE_KEY_ID,
+    "private_key": settings.FIREBASE_ADMIN_PRIVATE_KEY,
+    "client_email": settings.FIREBASE_ADMIN_CLIENT_EMAIL,
+    "client_id": settings.FIREBASE_ADMIN_CLIENT_ID,
+    "auth_uri": settings.FIREBASE_ADMIN_AUTH_URI,
+    "token_uri": settings.FIREBASE_ADMIN_TOKEN_URI,
+    "auth_provider_x509_cert_url": settings.FIREBASE_ADMIN_AUTH_PROVIDER_X509_CERT_URL,
+    "client_x509_cert_url": settings.FIREBASE_ADMIN_CLIENT_X509_CERT_URL,
+    "universe_domain": settings.FIREBASE_ADMIN_UNIVERSE_DOMAIN
+}
 
+firebase_client_config = {
+    "apiKey": settings.FIREBASE_CLIENT_APIKEY,
+    "authDomain": settings.FIREBASE_CLIENT_AUTHDOMAIN,
+    "projectId":settings.FIREBASE_CLIENT_PROJECTID,
+    "storageBucket": settings.FIREBASE_CLIENT_STORAGEBUCKET,
+    "messagingSenderId": settings.FIREBASE_CLIENT_MESSAGINGSENDERID,
+    "appId":settings.FIREBASE_CLIENT_APPID,
+    "measurementId":settings.FIREBASE_CLIENT_MEASUREMENTID,
+    "databaseURL":settings.FIREBASE_CLIENT_DATABASEURL
+}
 
 def initialize_firebase():
-    cred = credentials.Certificate(settings.FIREBASE_CREDENTIALS_PATH)
+    cred = credentials.Certificate(firebase_admin_config)
     firebase_admin.initialize_app(cred)
 
 def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
@@ -26,10 +49,7 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
 
 def initialize_firebase_client():
     
-    with open(settings.FIREBASE_CLIENT_CONFIG_PATH, "r") as f:
-        config = json.load(f)
-    
-    firebase = pyrebase.initialize_app(config)
+    firebase = pyrebase.initialize_app(firebase_client_config)
     return firebase
 
 if not firebase_admin._apps:
