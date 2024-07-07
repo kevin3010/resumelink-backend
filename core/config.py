@@ -47,7 +47,10 @@ class Settings(BaseSettings):
     FIREBASE_CLIENT_APPID: str
     FIREBASE_CLIENT_MEASUREMENTID: str
     FIREBASE_CLIENT_DATABASEURL: str
-    
+
+    @validator("FIREBASE_ADMIN_PRIVATE_KEY")
+    def replace_newline(cls, v):
+        return v.replace(r'\n', '\n')
     class Config:
         env_file = ".env"
 
