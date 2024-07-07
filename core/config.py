@@ -6,10 +6,6 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     DATABASE_NAME: str
     
-    # Firebase Configurations
-    FIREBASE_CREDENTIALS_PATH: str
-    FIREBASE_CLIENT_CONFIG_PATH: str
-    
     # AWS Configurations
     AWS_ACCESS_KEY: str
     AWS_SECRET_ACCESS_KEY: str
@@ -26,6 +22,31 @@ class Settings(BaseSettings):
     
     USERS_COLLECTION: str = "users"
     JOBS_COLLECTION: str = "jobs"
+    
+    
+    # FireBase Admin Config
+    FIREBASE_ADMIN_TYPE: str
+    FIREBASE_ADMIN_PROJECT_ID: str
+    FIREBASE_ADMIN_PRIVATE_KEY_ID: str
+    FIREBASE_ADMIN_PRIVATE_KEY: str
+    FIREBASE_ADMIN_CLIENT_EMAIL: str
+    FIREBASE_ADMIN_CLIENT_ID: str
+    FIREBASE_ADMIN_AUTH_URI: str
+    FIREBASE_ADMIN_TOKEN_URI: str
+    FIREBASE_ADMIN_AUTH_PROVIDER_X509_CERT_URL: str
+    FIREBASE_ADMIN_CLIENT_X509_CERT_URL: str
+    FIREBASE_ADMIN_UNIVERSE_DOMAIN: str
+
+
+    # FireBase Client Config
+    FIREBASE_CLIENT_APIKEY: str
+    FIREBASE_CLIENT_AUTHDOMAIN: str
+    FIREBASE_CLIENT_PROJECTID: str
+    FIREBASE_CLIENT_STORAGEBUCKET: str
+    FIREBASE_CLIENT_MESSAGINGSENDERID: str
+    FIREBASE_CLIENT_APPID: str
+    FIREBASE_CLIENT_MEASUREMENTID: str
+    FIREBASE_CLIENT_DATABASEURL: str
     
     class Config:
         env_file = ".env"
