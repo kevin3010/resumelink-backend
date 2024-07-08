@@ -2,9 +2,18 @@ from fastapi import FastAPI
 from api.endpoints import users
 from contextlib import asynccontextmanager
 from core.firebase import initialize_firebase
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
     docs_url="/api/docs",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 @asynccontextmanager
