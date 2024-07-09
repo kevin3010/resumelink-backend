@@ -40,10 +40,8 @@ def initialize_firebase():
 
 def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
     try:
-        print(credentials)
         decoded_token = auth.verify_id_token(credentials.credentials)
-        print("Kevin")
-        print(decoded_token)
+        decoded_token["credentials"] = credentials.credentials
         return decoded_token
     except Exception as e:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
