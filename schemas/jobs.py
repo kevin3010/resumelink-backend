@@ -17,7 +17,13 @@ class JobsBase(BaseModel):
 class JobsCreate(JobsBase):
     pass
 
+
+class JobSummary(BaseModel):
+    jobs_summary: str
+    experience: str
+    
 class JobsResponse(JobsBase):
     class Config:
         from_attributes = True
         json_encoders = {ObjectId: str}
+

@@ -6,6 +6,7 @@ from jobspy import scrape_jobs
 from schemas.jobs import JobsCreate
 from crud.jobs import crud_job
 from typing import List
+from core.llm_summarizer import summarizer
 
 async def fetch_jobs():
 
@@ -27,7 +28,7 @@ async def fetch_jobs():
 
 async def generate_embeddings(jobs : List[JobsCreate]):
     
-    job_descriptions = [job.description for job in jobs]
+    job_descriptions = [summarizer.summarize(job.description).jobs_summary for job in jobs]
     jobs_embeddings = await embedding_store.generate_embeddings(job_descriptions)
     return jobs_embeddings
     

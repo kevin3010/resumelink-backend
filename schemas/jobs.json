@@ -1,0 +1,15 @@
+{
+    "name": "job_description_summerizer",
+    "description": "Extracts job summary and required experience from postings",
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "jobs_summary": {"type": "string", "description": "Summaries focus on essential job details like skills and keywords, omitting company culture. Not more than 300 words."},
+            "experience": {
+                "type": "string",
+                "description": "Predicts minimum experience required if not explicitly stated. Eg. 2+ years, 5-7 years, etc."
+            }
+        },
+        "required": ["jobs_summary", "experience"]
+    }
+}
