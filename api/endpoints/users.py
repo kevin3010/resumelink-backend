@@ -5,6 +5,7 @@ from crud.user import crud_user
 from crud.jobs import crud_job
 from schemas.users import UserCreate, UserUpdate, UserResponse, SignUpSchema, LoginSchema, UserLoginResponse
 from schemas.jobs import JobsResponse
+from schemas.auth import Token
 from fastapi import APIRouter, Depends
 from firebase_admin import auth
 from core.firebase import verify_token, firebase_client
@@ -17,6 +18,19 @@ from core.vector_store import vector_store
 
 
 router = APIRouter()
+
+@router.post("/google/login")
+async def google_login(decoded_token: dict = Depends(verify_token)):
+    
+    try:
+        user = await crud_user.get(decoded_token["uid"])
+        if not user:
+            user = await crud_user.create(UserCreate(user_id=decoded_token["uid"], email=decoded_token["email"] , name=decoded_token["name"]))
+        
+        return UserLoginResponse(user_id=decoded_token["uid"], token=decoded_token["credentials"])
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
 
 @router.post("/signup",response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def signup(user: SignUpSchema):
