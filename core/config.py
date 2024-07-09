@@ -47,6 +47,11 @@ class Settings(BaseSettings):
     FIREBASE_CLIENT_APPID: str
     FIREBASE_CLIENT_MEASUREMENTID: str
     FIREBASE_CLIENT_DATABASEURL: str
+    
+    
+    # Anthropic Config
+    ANTHROPIC_API_KEY: str
+    ANTHROPIC_MODEL: str
 
     class Config:
         env_file = ".env"
