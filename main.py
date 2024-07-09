@@ -33,7 +33,6 @@ app.include_router(users.router, prefix="/api", tags=["users"])
 
 @app.get("/")
 async def read_index():
-    print("Hello")
     return FileResponse('static/index.html')
 
 @app.get("/health")
