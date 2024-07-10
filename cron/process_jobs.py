@@ -11,10 +11,10 @@ from core.llm_summarizer import summarizer
 async def fetch_jobs():
 
     jobs = scrape_jobs(
-        site_name=["indeed"],
+        site_name=["linkedin"],
         search_term="software engineer",
         location="Canada",
-        results_wanted=1,
+        results_wanted=50,
         hours_old=72, # (only Linkedin/Indeed is hour specific, others round up to days old)
         country_indeed='Canada',  # only needed for indeed / glassdoor
         linkedin_fetch_description=True # get full description and direct job url for linkedin (slower)
@@ -22,12 +22,14 @@ async def fetch_jobs():
 
     jobs.rename(columns={"id": "job_id"}, inplace=True)
     jobs["timestamp"] = ""
+    jobs.fillna("", inplace=True)
     
     return [JobsCreate(**job) for job in jobs.to_dict(orient="records")]
     
 
 async def generate_embeddings(jobs : List[JobsCreate]):
     
+    # job_descriptions = [job.description for job in jobs]
     job_descriptions = [summarizer.summarize(job.description).jobs_summary for job in jobs]
     jobs_embeddings = await embedding_store.generate_embeddings(job_descriptions)
     return jobs_embeddings

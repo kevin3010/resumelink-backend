@@ -7,6 +7,13 @@ from core.database import users_collection
 class CRUDUser:
     def __init__(self, collection: AsyncIOMotorCollection):
         self.collection = collection
+        
+    async def get_users(self) -> List[UserResponse]:
+        users = []
+        async for user in self.collection.find():
+            user["id"] = str(user["_id"])
+            users.append(UserResponse(**user))
+        return users
 
     async def create(self, user_in: UserCreate) -> UserResponse:
         user = user_in.model_dump()
@@ -21,7 +28,7 @@ class CRUDUser:
             return UserResponse(**user)
 
     async def update(self, user_id: str, user_in: UserUpdate) -> Optional[UserResponse]:
-        user = {k: v for k, v in user_in.dict().items() if v is not None}
+        user = {k: v for k, v in user_in.model_dump().items() if v is not None}
         result = await self.collection.update_one({"user_id": user_id}, {"$set": user})
         if result.matched_count == 1:
             user = await self.get(user_id)
