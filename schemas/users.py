@@ -21,7 +21,10 @@ class UserUpdate(UserBase):
     user_id: Optional[str] = None
     name: Optional[str] = None
     email: Optional[str] = None
-    resume: Optional[str] = None
+    resume_path: Optional[str] = None
+    resume_text: Optional[str] = None
+    jobs: Optional[List[str]] = None
+    resume_embeddings: Optional[List[float]] = None
     keywords: Optional[List[str]] = None
 
 class UserInDB(UserBase):
